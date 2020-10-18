@@ -1,9 +1,11 @@
 module Main where
 
-import qualified Parser (detectSeparator)
+import Parser (parseLines)
+import System.IO (readFile)
 
 main :: IO ()
 main = do
   putStrLn "Hello, Haskell!"
-  return $ Parser.detectSeparator "hi"
+  contents <- fmap parseLines $ readFile "commas.csv"  
+  putStrLn $ show contents
   return ()
