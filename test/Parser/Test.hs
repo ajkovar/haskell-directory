@@ -20,6 +20,8 @@ testParseLine = HUnit.TestLabel "parseLine" . HUnit.TestCase $ do
 testParseLines :: HUnit.Test
 testParseLines = HUnit.TestLabel "parseLines" . HUnit.TestCase $ do
   HUnit.assertEqual "Should read comma separated" [person1, person2] (parseLines file)
+  HUnit.assertEqual "Should handle blank lines" [person1, person2] (parseLines fileWithBlanks)
     where person1 = Person "John" "Smith" "male" "red" "04/22/2021"
           person2 = Person "Jane" "Smith" "female" "red" "04/22/2022"
           file = "John, Smith, male, red, 04/22/2021\nJane, Smith, female, red, 04/22/2022"
+          fileWithBlanks = "John, Smith, male, red, 04/22/2021\nJane, Smith, female, red, 04/22/2022"

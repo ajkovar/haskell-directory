@@ -32,4 +32,5 @@ parseLine line = parseArray $ fmap strip' $ splitOn separator line
         strip' = unpack . strip . pack
 
 parseLines :: [Char] -> [Person]
-parseLines file = fmap parseLine $ splitOn "\n" file
+parseLines file = fmap parseLine $ filter' $ splitOn "\n" file
+  where filter' = filter (\s -> (length s) > 0)
