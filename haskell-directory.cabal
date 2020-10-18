@@ -20,8 +20,10 @@ library
   exposed-modules:     Parser
   -- other-modules:
   -- other-extensions:
-  build-depends:       base ^>=4.13.0.0,
-                       split >= 0.2.3 && < 0.3
+  build-depends:       
+      base ^>=4.13.0.0
+    , split >= 0.2.3 && < 0.3
+    , text >= 1.2.4 && < 1.3
   -- hs-source-dirs:
   default-language:    Haskell2010
 
@@ -29,9 +31,12 @@ executable haskell-directory
   main-is:             Main.hs
   other-modules:       Parser
   -- other-extensions:
-  build-depends:       base ^>=4.13.0.0, 
-                       haskell-directory,
-                       HUnit >= 1.6.0 && < 1.7
+  build-depends:       
+      base ^>=4.13.0.0
+    , haskell-directory
+    , HUnit >= 1.6.0 && < 1.7
+    , split >= 0.2.3 && < 0.3
+    , text >= 1.2.4 && < 1.3
   -- hs-source-dirs:
   default-language:    Haskell2010
 
@@ -48,4 +53,6 @@ test-suite test
     , HUnit
     , base >= 4.6 && < 5
     , transformers
+    , split >= 0.2.3 && < 0.3
+    , text >= 1.2.4 && < 1.3
   default-language: Haskell2010

@@ -1,7 +1,9 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Parser (detectSeparator, parseLine, Person(Person)) where
 
 import Data.List (elemIndex)
 import Data.List.Split (splitOn)
+import Data.Text (strip, pack, unpack)
 
 data Person = Person { firstName :: String  
                      , lastName :: String  
@@ -25,5 +27,7 @@ parseArray :: [[Char]] -> Person
 parseArray [first, last, gender, color, dob] = Person first last gender color dob
 
 parseLine :: [Char] -> Person
-parseLine line = parseArray $ splitOn (detectSeparator line) line
+parseLine line = parseArray $ fmap strip' $ splitOn separator line
+  where separator = detectSeparator line
+        strip' = unpack . strip . pack
 
