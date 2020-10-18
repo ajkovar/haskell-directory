@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Parser (detectSeparator, parseLine, Person(Person)) where
+module Parser (detectSeparator, parseLine, Person(Person), parseLines) where
 
 import Data.List (elemIndex)
 import Data.List.Split (splitOn)
@@ -31,3 +31,5 @@ parseLine line = parseArray $ fmap strip' $ splitOn separator line
   where separator = detectSeparator line
         strip' = unpack . strip . pack
 
+parseLines :: [Char] -> [Person]
+parseLines file = fmap parseLine $ splitOn "\n" file
