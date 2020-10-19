@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Parser (detectSeparator, parseLine, Person(Person), parseLines, parseDate) where
+module Parser (detectSeparator, parseLine, Person(Person, gender, lastName), parseLines, parseDate) where
 
 import Data.List (elemIndex)
 import Data.List.Split (splitOn)
@@ -12,7 +12,10 @@ data Person = Person { firstName :: String
                      , gender :: String  
                      , favoriteColor :: String  
                      , dob :: Day
-                     } deriving (Show, Eq) 
+                     } deriving (Eq) 
+
+instance Show Person where
+  show p = firstName p ++ " " ++ lastName p ++ " " ++ gender p ++ " " ++ favoriteColor p ++ " " ++ show (dob p)
 
 contains :: Char -> [Char] -> Bool
 contains char str = case elemIndex char str of
