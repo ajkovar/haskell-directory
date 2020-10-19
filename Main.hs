@@ -5,10 +5,7 @@ import System.IO (readFile)
 import Data.Sort (sortBy)
 import Data.List (intercalate)
 
-compareGenderLastName p1 p2
-  | gender p1 < gender p2 = GT
-  | gender p1 > gender p2 = LT
-  | gender p1 == gender p2 = compare (lastName p1) (lastName p2)
+compareGenderLastName p1 p2 = compare (gender p1, lastName p1) (gender p2, lastName p2)
 
 printRecords r = intercalate "\n" $ fmap show r
   
