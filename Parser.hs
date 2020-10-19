@@ -1,15 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Parser (detectSeparator, parseLine, Person(Person), parseLines) where
+module Parser (detectSeparator, parseLine, Person(Person), parseLines, parseDate) where
 
 import Data.List (elemIndex)
 import Data.List.Split (splitOn)
 import Data.Text (strip, pack, unpack)
+import Data.Time (parseTimeM, Day, defaultTimeLocale)
+import Data.Maybe (catMaybes)
 
 data Person = Person { firstName :: String  
                      , lastName :: String  
                      , gender :: String  
                      , favoriteColor :: String  
-                     , dob :: String  
+                     , dob :: Day
                      } deriving (Show, Eq) 
 
 contains :: Char -> [Char] -> Bool
@@ -23,14 +25,25 @@ detectSeparator input
     | contains '|' input = "|"
     | otherwise = " "
 
-parseArray :: [[Char]] -> Person
-parseArray [first, last, gender, color, dob] = Person first last gender color dob
+parseDate  :: String -> Maybe Day
+parseDate d = parseTimeM True defaultTimeLocale "%m/%d/%Y" d
 
-parseLine :: [Char] -> Person
+parseArray :: [String] -> Maybe Person
+parseArray [first, last, gender, color, dob] = 
+  case parseDate dob of
+    Just date -> Just $ Person first last gender color date
+    Nothing -> Nothing
+
+parseLine :: String -> Maybe Person
 parseLine line = parseArray $ fmap strip' $ splitOn separator line
   where separator = detectSeparator line
         strip' = unpack . strip . pack
 
-parseLines :: [Char] -> [Person]
-parseLines file = fmap parseLine $ filter' $ splitOn "\n" file
-  where filter' = filter (\s -> (length s) > 0)
+personInvalid :: Maybe Person -> Bool
+personInvalid person = case person of
+                         Just _ -> True
+                         Nothing -> False 
+
+parseLines :: String -> [Person]
+parseLines file = catMaybes $ fmap parseLine $ filterBlank $ splitOn "\n" file
+  where filterBlank = filter (\s -> (length s) > 0)
