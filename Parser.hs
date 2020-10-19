@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Parser (detectSeparator, parseLine, Person(Person, gender, lastName), parseLines, parseDate) where
+module Parser (detectSeparator, parseLine, Person(Person, gender, lastName, dob), parseLines, parseDate) where
 
 import Data.List (elemIndex)
 import Data.List.Split (splitOn)
