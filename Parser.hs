@@ -36,6 +36,7 @@ parseArray [first, last, gender, color, dob] =
   case parseDate dob of
     Just date -> Just $ Person first last gender color date
     Nothing -> Nothing
+parseArray _ = Nothing
 
 parseLine :: String -> Maybe Person
 parseLine line = parseArray $ fmap strip' $ splitOn separator line
@@ -43,5 +44,4 @@ parseLine line = parseArray $ fmap strip' $ splitOn separator line
         strip' = unpack . strip . pack
 
 parseLines :: String -> [Person]
-parseLines file = catMaybes $ fmap parseLine $ filterBlank $ splitOn "\n" file
-  where filterBlank = filter (\s -> (length s) > 0)
+parseLines file = catMaybes $ fmap parseLine $ splitOn "\n" file
