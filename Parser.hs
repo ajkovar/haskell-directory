@@ -42,11 +42,6 @@ parseLine line = parseArray $ fmap strip' $ splitOn separator line
   where separator = detectSeparator line
         strip' = unpack . strip . pack
 
-personInvalid :: Maybe Person -> Bool
-personInvalid person = case person of
-                         Just _ -> True
-                         Nothing -> False 
-
 parseLines :: String -> [Person]
 parseLines file = catMaybes $ fmap parseLine $ filterBlank $ splitOn "\n" file
   where filterBlank = filter (\s -> (length s) > 0)
