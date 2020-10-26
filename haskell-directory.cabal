@@ -26,6 +26,7 @@ library
     , text >= 1.2.4 && < 1.3
     , time >= 1.9.3 && < 1.10
     , sort >= 1.0.0 && < 1.1
+    , aeson
   -- hs-source-dirs:
   default-language:    Haskell2010
 
@@ -41,6 +42,28 @@ executable haskell-directory
     , text >= 1.2.4 && < 1.3
     , time >= 1.9.3 && < 1.10
     , sort >= 1.0.0 && < 1.1
+    , aeson
+  -- hs-source-dirs:
+  default-language:    Haskell2010
+
+
+executable haskell-directory-server
+  main-is:             Server.hs
+  other-modules:       Parser
+  -- other-extensions:
+  build-depends:       
+      base ^>=4.13.0.0
+    , haskell-directory
+    , HUnit >= 1.6.0 && < 1.7
+    , split >= 0.2.3 && < 0.3
+    , text >= 1.2.4 && < 1.3
+    , time >= 1.9.3 && < 1.10
+    , sort >= 1.0.0 && < 1.1
+    , happstack-server
+    , blaze-markup
+    , blaze-html
+    , bytestring
+    , aeson
   -- hs-source-dirs:
   default-language:    Haskell2010
 
