@@ -12,9 +12,8 @@ import Happstack.Server
 import Happstack.Server.Types
 import Data.IORef.Lifted (newIORef, readIORef, writeIORef, IORef)
 import Control.Applicative ((<$>), (<*>))
-import Parser (parseLine, Person(Person, firstName, gender, lastName, dob, favoriteColor))
+import Parser (parseLine, Person(Person, firstName, gender, lastName, dob, favoriteColor), fullName)
 import Data.Sort (sortBy)
--- import control.monad.trans (liftio)
 
 main :: IO ()
 main = do
@@ -29,8 +28,10 @@ myApp :: IORef [Person] -> ServerPart Response
 myApp ref = do 
   decodeBody myPolicy
   msum [ 
-          dirs "records/gender"   $ getPeopleByGender ref
-        , dir "records"   $ postPerson ref
+          dirs "records/gender" $ getPeopleByProp gender ref
+        , dirs "records/birthdate" $ getPeopleByProp dob ref
+        , dirs "records/name" $ getPeopleByProp fullName ref
+        , dir "records" $ postPerson ref
        ]
 
 getBody :: ServerPart L.ByteString
@@ -41,10 +42,10 @@ getBody = do
         Just rqbody -> return . unBody $ rqbody 
         Nothing     -> return ""
 
-getPeopleByGender :: IORef [Person] -> ServerPart Response
-getPeopleByGender ref = do
+getPeopleByProp :: (Ord a) => (Person -> a) -> IORef [Person] -> ServerPart Response
+getPeopleByProp prop ref = do
   people <- readIORef ref
-  ok $ toResponse $ encode $ sortBy (\p1 p2 -> compare (gender p1) (gender p2)) people
+  ok $ toResponse $ encode $ sortBy (\p1 p2 -> compare (prop p1) (prop p2)) people
 
 postPerson :: IORef [Person] -> ServerPart Response
 postPerson ref = do

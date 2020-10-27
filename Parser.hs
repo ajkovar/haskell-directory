@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
-module Parser (detectSeparator, parseLine, Person(Person, firstName, gender, lastName, dob, favoriteColor), parseLines, parseDate) where
+module Parser (detectSeparator, parseLine, Person(Person, firstName, gender, lastName, dob, favoriteColor), fullName, parseLines, parseDate) where
 import Data.Aeson
 import GHC.Generics
 import Data.List (elemIndex)
@@ -15,8 +15,11 @@ data Person = Person { firstName :: String
                      , dob :: Day
                      } deriving (Generic, Eq) 
 
+fullName :: Person -> String
+fullName p = firstName p ++ " " ++ lastName p
+
 instance Show Person where
-  show p = firstName p ++ " " ++ lastName p ++ " " ++ gender p ++ " " ++ favoriteColor p ++ " " ++ show (dob p)
+  show p = fullName p ++ " " ++ gender p ++ " " ++ favoriteColor p ++ " " ++ show (dob p)
 
 instance ToJSON Person where
     toEncoding = genericToEncoding defaultOptions
