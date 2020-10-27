@@ -20,18 +20,14 @@ main = do
   ref <- newIORef $ ([] :: [Person])
   simpleHTTP nullConf $ myApp ref
 
-myPolicy :: BodyPolicy
-myPolicy = (defaultBodyPolicy "/tmp/" 0 1000 1000)
-
 myApp :: IORef [Person] -> ServerPart Response
 myApp ref = do 
-  decodeBody myPolicy
   msum [ 
-          dirs "records/gender" $ getPeopleByProp gender ref
-        , dirs "records/birthdate" $ getPeopleByProp dob ref
-        , dirs "records/name" $ getPeopleByProp fullName ref
-        , dir "records" $ postPerson ref
-       ]
+     dirs "records/gender" $ getPeopleByProp gender ref
+   , dirs "records/birthdate" $ getPeopleByProp dob ref
+   , dirs "records/name" $ getPeopleByProp fullName ref
+   , dir "records" $ postPerson ref
+   ]
 
 getBody :: ServerPart L.ByteString
 getBody = do
