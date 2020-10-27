@@ -31,8 +31,7 @@ myApp ref = do
 
 getBody :: ServerPart ByteString
 getBody = do
-  req  <- askRq 
-  body <- liftIO $ takeRequestBody req 
+  body <- askRq >>= takeRequestBody
   case body of 
     Just rqbody -> return . unBody $ rqbody 
     Nothing     -> return ""
