@@ -53,3 +53,8 @@ To keep it simple, don't worry about using a persistent datastore.
 ### Run Step 2
 
     cabal v2-run haskell-directory-server
+
+### Call api
+
+    curl -i --request POST --data 'John, Smath, male, red, 04/22/4016' http://localhost:8000/records
+    curl -i http://localhost:8000/records/gender
