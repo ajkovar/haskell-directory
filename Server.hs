@@ -8,7 +8,7 @@ import Control.Monad (msum, mzero)
 import Data.Data (Data, Typeable)
 import Data.Maybe (fromJust)
 import Data.Aeson (encode)
-import Happstack.Server (ServerPart, toResponse, badRequest, ok, dir, dirs, askRq, simpleHTTP)
+import Happstack.Server (ServerPart, toResponse, badRequest, ok, dir, dirs, askRq, method, Method(GET, POST), simpleHTTP)
 import Happstack.Server.Types (Response, takeRequestBody, unBody, nullConf)
 import Data.IORef.Lifted (newIORef, readIORef, writeIORef, IORef)
 import Control.Applicative ((<$>), (<*>))
@@ -38,11 +38,13 @@ getBody = do
 
 getPeopleByProp :: (Ord a) => (Person -> a) -> IORef [Person] -> ServerPart Response
 getPeopleByProp prop ref = do
+  method GET
   people <- readIORef ref
   ok $ toResponse $ encode $ sortBy (\p1 p2 -> compare (prop p1) (prop p2)) people
 
 postPerson :: IORef [Person] -> ServerPart Response
 postPerson ref = do
+  method POST
   body <- getBody
   case parseLine $ unpack body of
     Just person -> do
