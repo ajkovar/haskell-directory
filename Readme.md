@@ -1,4 +1,6 @@
-## Step 1 - Build a system to parse and sort a set of records
+## Challenge Description
+
+### Step 1 - Build a system to parse and sort a set of records
 Create a command line app that takes as input a file with a set of records in one of three formats
 described below, and outputs (to the screen) the set of records sorted in one of three ways.
 Input
@@ -25,7 +27,7 @@ Create and display 3 different views of the data you read in:
 
 Display dates in the format M/D/YYYY.
 
-## Step 2 - Build a REST API to access your system
+### Step 2 - Build a REST API to access your system
 Tests for this section are required as well.
 Within the same code base, build a standalone REST API with the following endpoints:
 
@@ -37,3 +39,17 @@ Within the same code base, build a standalone REST API with the following endpo
 It's your choice how you render the output from these endpoints as long as it well structured data.
 These endpoints should return JSON.
 To keep it simple, don't worry about using a persistent datastore.
+
+## Commands
+
+### Run tests
+
+    cabal v2-test
+
+### Run Step 1  
+
+    cabal v2-run haskell-directory
+    
+### Run Step 2
+
+    cabal v2-run haskell-directory-server
