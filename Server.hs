@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable, OverloadedStrings #-}
+{-# LANGUAGE DeriveDataTypeable, OverloadedStrings, BlockArguments #-}
 
 module Main where
 
@@ -10,18 +10,24 @@ import Data.Maybe (fromJust)
 import Data.Aeson
 import Happstack.Server
 import Happstack.Server.Types
+import Data.IORef.Lifted (newIORef, readIORef, writeIORef, IORef)
 import Control.Applicative ((<$>), (<*>))
 import Parser (parseLine, Person(Person, firstName, gender, lastName, dob, favoriteColor))
+-- import control.monad.trans (liftio)
 
 main :: IO ()
-main = simpleHTTP nullConf myApp
+main = do
+  ref <- newIORef $ ([] :: [Person])
+  readIORef ref >>= print
+  simpleHTTP nullConf $ myApp ref
 
 myPolicy :: BodyPolicy
 myPolicy = (defaultBodyPolicy "/tmp/" 0 1000 1000)
 
-myApp :: ServerPart Response
-myApp = do decodeBody myPolicy
-           msum [ dir "unit"   $ postUnit ]
+myApp :: IORef [Person] -> ServerPart Response
+myApp ref = do 
+  decodeBody myPolicy
+  msum [ dir "unit"   $ postUnit ref]
 
 getBody :: ServerPart L.ByteString
 getBody = do
@@ -31,9 +37,13 @@ getBody = do
         Just rqbody -> return . unBody $ rqbody 
         Nothing     -> return ""
 
-postUnit :: ServerPart Response
-postUnit = do
+postUnit :: IORef [Person] -> ServerPart Response
+postUnit ref = do
   body <- getBody
   case parseLine $ L.unpack body of
-    Just person -> ok $ toResponse $ encode $ person
+    Just person -> do
+      people <- readIORef ref
+      writeIORef ref (people ++ [person])
+    --   readIORef ref >>= print
+      ok $ toResponse $ encode $ people
     Nothing   -> badRequest $ toResponse $ ("Could not parse" :: String)
