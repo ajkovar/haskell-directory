@@ -18,7 +18,6 @@ import Data.Sort (sortBy)
 main :: IO ()
 main = do
   ref <- newIORef $ ([] :: [Person])
-  readIORef ref >>= print
   simpleHTTP nullConf $ myApp ref
 
 myPolicy :: BodyPolicy
