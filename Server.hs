@@ -2,14 +2,14 @@
 
 module Main where
 
-import qualified Data.ByteString.Lazy.Char8 as L
+import Data.ByteString.Lazy.Char8 (unpack, ByteString)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad (msum, mzero)
 import Data.Data (Data, Typeable)
 import Data.Maybe (fromJust)
-import Data.Aeson
-import Happstack.Server
-import Happstack.Server.Types
+import Data.Aeson (encode)
+import Happstack.Server (ServerPart, toResponse, badRequest, ok, dir, dirs, askRq, simpleHTTP)
+import Happstack.Server.Types (Response, takeRequestBody, unBody, nullConf)
 import Data.IORef.Lifted (newIORef, readIORef, writeIORef, IORef)
 import Control.Applicative ((<$>), (<*>))
 import Parser (parseLine, Person(Person, firstName, gender, lastName, dob, favoriteColor), fullName)
@@ -29,13 +29,13 @@ myApp ref = do
    , dir "records" $ postPerson ref
    ]
 
-getBody :: ServerPart L.ByteString
+getBody :: ServerPart ByteString
 getBody = do
-    req  <- askRq 
-    body <- liftIO $ takeRequestBody req 
-    case body of 
-        Just rqbody -> return . unBody $ rqbody 
-        Nothing     -> return ""
+  req  <- askRq 
+  body <- liftIO $ takeRequestBody req 
+  case body of 
+    Just rqbody -> return . unBody $ rqbody 
+    Nothing     -> return ""
 
 getPeopleByProp :: (Ord a) => (Person -> a) -> IORef [Person] -> ServerPart Response
 getPeopleByProp prop ref = do
@@ -45,7 +45,7 @@ getPeopleByProp prop ref = do
 postPerson :: IORef [Person] -> ServerPart Response
 postPerson ref = do
   body <- getBody
-  case parseLine $ L.unpack body of
+  case parseLine $ unpack body of
     Just person -> do
       people <- readIORef ref
       writeIORef ref (people ++ [person])
